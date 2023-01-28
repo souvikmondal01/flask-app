@@ -43,12 +43,30 @@ def signup():
     password = request.form["password"]
 
     new_user = User(name=name, username=username,
-                    email=email,password=password)
+                    email=email, password=password)
     db.session.add(new_user)
     # db.drop_all()
     db.create_all()
     db.session.commit()
     return jsonify(msg="user added successfully")
+
+
+@app.route("/get_user", methods=["GET"])
+def get_user():
+    users = User.query.all()
+
+    user_data = {}
+    user_list = []
+    for user in users:
+        user_list.append({
+            "id": user.id,
+            "name": user.name,
+            "username": user.username,
+            "email": user.email
+        })
+    user_data["users"] = user_list
+
+    return jsonify(user_data)
 
 
 if __name__ == "__main__":
